@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -41,10 +42,10 @@ public class UserController {
         try {
             if (user.getUserName() != null && user.getPassword() != null) {
                 UserDTO userDTO = userService.registerUser(user);
-                response.put("message", messageSource.getMessage("registration.success", null, null));
+                response.put("message", messageSource.getMessage("registration.success", null, Locale.getDefault()));
                 logger.info("User Registered Successfully::");
             } else {
-                response.put("error", messageSource.getMessage("user.username.null", null, null));
+                response.put("error", messageSource.getMessage("user.username.null", null, Locale.getDefault()));
                 logger.error("User Cannot be Registered due to null username or password::");
             }
         } catch (Exception e) {
@@ -57,11 +58,13 @@ public class UserController {
     @GetMapping("/loginUser")
     public Map<String, String> loginUser(@RequestParam("userName") String userName, @RequestParam("password") String password) {
         Map<String, String> response = new HashMap<>();
-        if (!userName.isEmpty() && !password.isEmpty()) {
+        if (userName == null || userName.isEmpty()) {
+            response.put("error", messageSource.getMessage("login.username.null", null, Locale.getDefault()));
+        } else if (password == null || password.isEmpty()) {
+            response.put("error", messageSource.getMessage("login.password.null", null, Locale.getDefault()));
+        } else {
             String loginResult = userService.loginUser(userName, password);
             response.put("message", loginResult);
-        } else {
-            response.put("error", messageSource.getMessage("login.error", null, null));
         }
         return response;
     }
@@ -69,7 +72,7 @@ public class UserController {
     @PutMapping("/updateUser")
     public UserDTO updateUser(@RequestBody User user) throws JsonProcessingException {
         if (user == null || user.getUserName() == null) {
-            throw new IllegalArgumentException("Invalid::");
+            throw new IllegalArgumentException(messageSource.getMessage("user.username.null", null, Locale.getDefault()));
         }
         return userService.updateUser(user);
     }
@@ -77,9 +80,9 @@ public class UserController {
     @DeleteMapping("/deleteUser")
     public String deleteUser(@RequestParam("userName") String userName) {
         if (userName == null || userName.isEmpty()) {
-            throw new IllegalArgumentException("Username should not be null or empty");
+            throw new IllegalArgumentException(messageSource.getMessage("user.username.null", null, Locale.getDefault()));
         }
         userService.deleteUser(userName);
-        return "User deleted successfully";
+        return messageSource.getMessage("user.delete.success", null, Locale.getDefault());
     }
 }

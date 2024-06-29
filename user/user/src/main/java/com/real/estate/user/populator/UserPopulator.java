@@ -7,13 +7,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserPopulator {
     public UserDTO populate(User user, UserDTO userDTO){
-        userDTO.setUserId(user.getUserId());
+        userDTO.setUUID(user.getUUID());
         userDTO.setUserName(user.getUserName());
         userDTO.setUserStatus(user.getUserStatus());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
         userDTO.setPassword(user.getPassword());
         userDTO.setEmail(user.getEmail());
-        userDTO.setMobile(user.getMobile());
-        userDTO.setRoleType(user.getRoleType());
+        userDTO.setRoles(user.getRoles());
         return userDTO;
     }
 

@@ -1,17 +1,15 @@
 package com.real.estate.user.entity;
 
-import com.real.estate.user.validations.Mobile;
 import com.real.estate.user.validations.ValidEmail;
 import com.real.estate.user.validations.ValidPassword;
 import com.real.estate.user.validations.ValidUserName;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -19,8 +17,8 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long UUID;
 
     @ValidUserName
     @NotNull
@@ -29,38 +27,29 @@ public class User {
     @NotNull
     @ValidPassword
     private String password;
+    private String firstName;
+    private String lastName;
 
     @ValidEmail
     private String email;
 
-    @Mobile
-    @NotNull
-    private String mobile;
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "roleId")
+    )
+    private List<Role> roles=new ArrayList<>();
 
-    @NotBlank(message = "Role should not be Null")
-    private String roleType;
-
+    @NotNull(message = "Status should not be null")
     private String userStatus;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", roleType='" + roleType + '\'' +
-                ", userStatus='" + userStatus + '\'' +
-                '}';
+    public Long getUUID() {
+        return UUID;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUUID(Long UUID) {
+        this.UUID = UUID;
     }
 
     public String getUserName() {
@@ -79,6 +68,22 @@ public class User {
         this.password = password;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -87,20 +92,12 @@ public class User {
         this.email = email;
     }
 
-    public String getMobile() {
-        return mobile;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getRoleType() {
-        return roleType;
-    }
-
-    public void setRoleType(String roleType) {
-        this.roleType = roleType;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public String getUserStatus() {
@@ -109,5 +106,19 @@ public class User {
 
     public void setUserStatus(String userStatus) {
         this.userStatus = userStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "UUID=" + UUID +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", roles=" + roles +
+                ", userStatus='" + userStatus + '\'' +
+                '}';
     }
 }
