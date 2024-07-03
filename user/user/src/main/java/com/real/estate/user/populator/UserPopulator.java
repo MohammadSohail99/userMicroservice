@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserPopulator {
-    public UserDTO populate(User user, UserDTO userDTO){
+    public void populate(User user, UserDTO userDTO){
         userDTO.setUUID(user.getUUID());
         userDTO.setUserName(user.getUserName());
         userDTO.setUserStatus(user.getUserStatus());
@@ -15,7 +15,6 @@ public class UserPopulator {
         userDTO.setPassword(user.getPassword());
         userDTO.setEmail(user.getEmail());
         userDTO.setRoles(user.getRoles());
-        return userDTO;
     }
 
 }
