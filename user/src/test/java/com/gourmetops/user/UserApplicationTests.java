@@ -1,4 +1,4 @@
-package com.real.estate.user;
+package com.gourmetops.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
